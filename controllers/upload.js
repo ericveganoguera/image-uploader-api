@@ -6,7 +6,7 @@ const GridFSBucket = require("mongodb").GridFSBucket;
 
 const url = dbConfig.url;
 
-const baseUrl =  "http://localhost:5005/files/"
+const baseUrl =  "https://image-uploader-api.adaptable.app/files/"
 
 const mongoClient = new MongoClient(url);
 
@@ -14,7 +14,7 @@ const uploadFiles = async (req, res) => {
   try {
 
     await mongoClient.connect();
-    
+
     await upload(req, res);
     console.log(req.file);
 
