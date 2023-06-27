@@ -20,7 +20,7 @@ var storage = new GridFsStorage({
     };
   },
   // Disable compression
-  options: { disableCompression: true }
+  options: { zlib: false }
 });
 
 var uploadFiles = multer({ storage: storage }).single("file");
