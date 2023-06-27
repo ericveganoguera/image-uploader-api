@@ -1,3 +1,4 @@
+const mime = require('mime-types');
 const upload = require("../middleware/upload");
 const dbConfig = require("../config/db");
 
@@ -19,12 +20,12 @@ const uploadFiles = async (req, res) => {
     console.log(req.file);
 
     if (req.file == undefined) {
-      return res.send({
+      return res.status(400).send({
         message: "You must select a file.",
       });
     }
 
-    return res.send({
+    return res.status(200).send({
       message: "File has been uploaded.",
     });
   } catch (error) {
@@ -79,7 +80,8 @@ const download = async (req, res) => {
     let downloadStream = bucket.openDownloadStreamByName(req.params.name);
 
     downloadStream.on("data", function (data) {
-      res.set('Content-Type', 'image/png');
+      const contentType = mime.lookup(req.params.name);
+      res.set('Content-Type', contentType);
       return res.status(200).send(data);
     });
 
