@@ -18,7 +18,9 @@ var storage = new GridFsStorage({
       bucketName: dbConfig.imgBucket,
       filename: file.originalname
     };
-  }
+  },
+  // Disable compression
+  options: { disableCompression: true }
 });
 
 var uploadFiles = multer({ storage: storage }).single("file");
