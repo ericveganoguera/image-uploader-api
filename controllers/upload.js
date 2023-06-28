@@ -1,4 +1,4 @@
-const mime = require('mime-types');
+const mime = require("mime-types");
 const upload = require("../middleware/upload");
 const dbConfig = require("../config/db");
 
@@ -7,22 +7,26 @@ const GridFSBucket = require("mongodb").GridFSBucket;
 
 const url = dbConfig.url;
 
-const baseUrl =  "https://image-uploader-api.adaptable.app/files/"
+const baseUrl = "https://image-uploader-api.adaptable.app/files/";
 
 const mongoClient = new MongoClient(url);
 
 const uploadFiles = async (req, res) => {
   try {
-
     await mongoClient.connect();
 
     await upload(req, res);
     console.log(req.file);
 
-    if (req.file == undefined) {
+    if (req.file === undefined) {
       return res.status(400).send({
         message: "You must select a file.",
       });
+    } 
+    if ((req.file.mimetype !== "image/png" && req.file.mimetype !== "image/jpg" && req.file.mimetype !== "image/jpeg")) {
+      return res
+        .status(401)
+        .send({ message: "You must select a valid format image" });
     }
 
     return res.status(200).send({
@@ -81,7 +85,7 @@ const download = async (req, res) => {
 
     downloadStream.on("data", function (data) {
       const contentType = mime.lookup(req.params.name);
-      res.set('Content-Type', contentType);
+      res.set("Content-Type", contentType);
       return res.status(200).send(data);
     });
 
