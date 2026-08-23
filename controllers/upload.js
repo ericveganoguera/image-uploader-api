@@ -34,9 +34,8 @@ const uploadFiles = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-
-    return res.send({
-      message: "Error when trying upload image: ${error}",
+    return res.status(500).send({
+      message: `Error when trying upload image: ${error}`,
     });
   }
 };

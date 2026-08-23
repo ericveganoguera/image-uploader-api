@@ -3,19 +3,25 @@ const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const dbConfig = require("../config/db");
 
+function buildMongoUri(uri, dbName) {
+  const [base, query] = uri.split("?");
+  const baseWithSlash = base.endsWith("/") ? base : `${base}/`;
+  return query ? `${baseWithSlash}${dbName}?${query}` : `${baseWithSlash}${dbName}`;
+}
+
 var storage = new GridFsStorage({
-  url: dbConfig.url + dbConfig.database,
-  options: { useNewUrlParser: true, useUnifiedTopology: true},
+  url: buildMongoUri(dbConfig.url, dbConfig.database),
+  options: { useNewUrlParser: true, useUnifiedTopology: true },
   file: (req, file) => {
-    const match = ["image/png", "image/jpeg"]
-    
+    const match = ["image/png", "image/jpeg"];
+
     if (match.indexOf(file.mimetype) === -1) {
-      const filename = file.originalname
+      const filename = file.originalname;
       return filename;
     }
     return {
       bucketName: dbConfig.imgBucket,
-      filename: file.originalname
+      filename: file.originalname,
     };
   },
 });
