@@ -80,21 +80,16 @@ const download = async (req, res) => {
       bucketName: dbConfig.imgBucket,
     });
 
-    let downloadStream = bucket.openDownloadStreamByName(req.params.name);
+    const contentType = mime.lookup(req.params.name);
+    res.set("Content-Type", contentType || "application/octet-stream");
 
-    downloadStream.on("data", function (data) {
-      const contentType = mime.lookup(req.params.name);
-      res.set("Content-Type", contentType);
-      return res.status(200).send(data);
-    });
+    const downloadStream = bucket.openDownloadStreamByName(req.params.name);
 
     downloadStream.on("error", function (err) {
       return res.status(404).send({ message: "Cannot download the Image!" });
     });
 
-    downloadStream.on("end", () => {
-      return res.end();
-    });
+    downloadStream.pipe(res);
   } catch (error) {
     return res.status(500).send({
       message: error.message,
