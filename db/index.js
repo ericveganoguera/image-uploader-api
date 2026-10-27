@@ -3,21 +3,9 @@
 const mongoose = require("mongoose");
 const dbConfig = require("../config/db");
 
-// ℹ️ Sets the MongoDB URI for our app to have access to it.
-// If no env has been set, we dynamically set it to whatever the folder name was upon the creation of the app
-
-const MONGO_URI =
-  process.env.MONGODB_URI+dbConfig.database || "mongodb://127.0.0.1:27017/image-uploader-api";
-
-// mongoose
-//   .connect(MONGO_URI)
-//   .then((x) => {
-//     const dbName = x.connections[0].name;
-//     console.log(`Connected to Mongo! Database name: "${dbName}"`);
-//   })
-//   .catch((err) => {
-//     console.error("Error connecting to mongo: ", err);
-//   });
+// ℹ️ MongoDB connection string. The database name is passed with `dbName`,
+// so MONGODB_URI can be the bare connection string (local MongoDB if not set)
+const MONGO_URI = dbConfig.url;
 
 mongoose
   .connect(MONGO_URI, { dbName: dbConfig.database })
@@ -28,4 +16,3 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to mongo: ", err);
   });
-  
